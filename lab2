@@ -1,0 +1,47 @@
+#include <iostream>
+#include <vector>
+#include <iomanip>
+#include <cmath>
+
+float ieee754_to_float(uint32_t ieee754) {
+    float result;
+    std::memcpy(&result, &ieee754, sizeof(result));
+    return result;
+}
+
+uint32_t float_to_ieee754(float number) {
+    uint32_t ieee754;
+    std::memcpy(&ieee754, &number, sizeof(number));
+    return ieee754;
+}
+
+uint32_t sum_ieee754_numbers(const std::vector<uint32_t>& numbers) {
+    float total = 0.0f;
+    for (const auto& num : numbers) {
+        total += ieee754_to_float(num);
+    }
+    return float_to_ieee754(total);
+}
+
+void print_ieee754_numbers(const std::vector<uint32_t>& numbers) {
+    for (const auto& num : numbers) {
+        float value = ieee754_to_float(num);
+        std::cout << std::hex << std::uppercase << num << " -> " << std::dec << value << std::endl;
+    }
+}
+
+int main() {
+    setlocale(LC_ALL, "Russian");
+    std::vector<uint32_t> ieee754_numbers = {
+        0x7ED00000, 
+        0x7D800000  
+    };
+
+    std::cout << "Исходные числа:" << std::endl;
+    print_ieee754_numbers(ieee754_numbers);
+
+    uint32_t sum = sum_ieee754_numbers(ieee754_numbers);
+    std::cout << "Сумма: " << std::hex << std::uppercase << sum << " -> " << std::dec << ieee754_to_float(sum) << std::endl;
+
+    return 0;
+}
